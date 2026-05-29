@@ -33,18 +33,21 @@ class ProductSeeder extends Seeder
                 'category_id' => $bebidas?->id,
                 'price' => 15.00,
                 'stock' => 44,
+                'image' => null,
             ],
             [
                 'name' => 'Tacos al Pastor',
                 'category_id' => $tacos?->id,
                 'price' => 80.00,
                 'stock' => 50,
+                'image' => null,
             ],
             [
                 'name' => 'Quesadillas',
                 'category_id' => $tacos?->id,
                 'price' => 65.00,
                 'stock' => 35,
+                'image' => null,
             ],
         ];
 
