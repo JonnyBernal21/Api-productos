@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -10,18 +11,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProductFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
             'name' => fake()->words(3, true),
-            'description' => fake()->optional()->sentence(12),
+            'barcode' => fake()->optional(0.4)->ean13(),
+            'category_id' => Category::query()->inRandomOrder()->value('id'),
+            'unidad_medida_id' => null,
             'price' => fake()->randomFloat(2, 5, 500),
             'stock' => fake()->numberBetween(0, 200),
+            'image' => fake()->optional(0.3)->imageUrl(640, 480, 'food'),
         ];
     }
 }

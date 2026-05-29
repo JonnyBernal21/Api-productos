@@ -14,14 +14,20 @@ class ProductController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Product::query()->orderBy('name');
+        $query = Product::query()
+            ->with('category')
+            ->orderBy('name');
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
             $query->where(function ($builder) use ($search) {
                 $builder->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('barcode', 'like', "%{$search}%");
             });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->integer('category_id'));
         }
 
         if ($request->boolean('in_stock')) {
@@ -41,6 +47,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request): JsonResponse
     {
         $product = Product::create($request->validated());
+        $product->load('category');
 
         return response()->json([
             'success' => true,
@@ -53,6 +60,8 @@ class ProductController extends Controller
 
     public function show(Product $product): JsonResponse
     {
+        $product->load('category');
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -64,12 +73,13 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
         $product->update($request->validated());
+        $product->load('category');
 
         return response()->json([
             'success' => true,
             'message' => 'Producto actualizado correctamente.',
             'data' => [
-                'product' => new ProductResource($product->fresh()),
+                'product' => new ProductResource($product->fresh(['category'])),
             ],
         ]);
     }

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * @return array<string, mixed>
@@ -15,16 +15,6 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'barcode' => $this->barcode,
-            'category_id' => $this->category_id,
-            'category' => $this->whenLoaded(
-                'category',
-                fn () => new CategoryResource($this->category)
-            ),
-            'unidad_medida_id' => $this->unidad_medida_id,
-            'price' => (float) $this->price,
-            'stock' => $this->stock,
-            'image' => $this->image,
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

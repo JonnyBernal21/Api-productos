@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,7 @@ Route::prefix('auth')->middleware('throttle:10,1')->group(function () {    Route
     });
 });
 
+Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 

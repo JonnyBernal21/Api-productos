@@ -2,49 +2,61 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Product::factory()->createMany([
-            [
-                'name' => 'Laptop Pro 15',
-                'description' => 'Laptop de alto rendimiento con 16GB RAM y SSD 512GB.',
-                'price' => 1299.99,
-                'stock' => 25,
-            ],
-            [
-                'name' => 'Mouse Inalámbrico',
-                'description' => 'Mouse ergonómico con conexión Bluetooth.',
-                'price' => 29.99,
-                'stock' => 150,
-            ],
-            [
-                'name' => 'Teclado Mecánico',
-                'description' => 'Teclado mecánico RGB con switches azules.',
-                'price' => 89.99,
-                'stock' => 80,
-            ],
-            [
-                'name' => 'Monitor 27 pulgadas',
-                'description' => 'Monitor IPS Full HD con 75Hz.',
-                'price' => 249.99,
-                'stock' => 40,
-            ],
-            [
-                'name' => 'Auriculares Bluetooth',
-                'description' => 'Auriculares con cancelación de ruido activa.',
-                'price' => 79.99,
-                'stock' => 0,
-            ],
-        ]);
+        $bebidas = Category::where('name', 'Bebidas')->first();
+        $tacos = Category::where('name', 'Tacos')->first();
 
-        Product::factory(15)->create();
+        $products = [
+            [
+                'name' => 'Coca Cola',
+                'category_id' => $bebidas?->id,
+                'price' => 25.00,
+                'stock' => 79,
+                'image' => 'https://productos.axiumtecnologies.com/images/cocacola.webp',
+            ],
+            [
+                'name' => 'Pepsi',
+                'category_id' => $bebidas?->id,
+                'price' => 22.00,
+                'stock' => 83,
+                'image' => 'https://productos.axiumtecnologies.com/images/pepsi.webp',
+            ],
+            [
+                'name' => 'Agua Natural',
+                'category_id' => $bebidas?->id,
+                'price' => 15.00,
+                'stock' => 44,
+            ],
+            [
+                'name' => 'Tacos al Pastor',
+                'category_id' => $tacos?->id,
+                'price' => 80.00,
+                'stock' => 50,
+            ],
+            [
+                'name' => 'Quesadillas',
+                'category_id' => $tacos?->id,
+                'price' => 65.00,
+                'stock' => 35,
+            ],
+        ];
+
+        foreach ($products as $data) {
+            Product::updateOrCreate(
+                ['name' => $data['name']],
+                $data
+            );
+        }
+
+        if (Product::count() < 15) {
+            Product::factory(15 - Product::count())->create();
+        }
     }
 }
