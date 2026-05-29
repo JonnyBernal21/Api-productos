@@ -147,7 +147,7 @@ class CheckoutService
                 'confirmed_at' => now(),
             ]);
 
-            return $order->fresh(['items.product']);
+            return $order->fresh(['items.product', 'delivery']);
         });
     }
 

@@ -14,7 +14,7 @@ class OrderController extends Controller
     {
         $orders = Order::query()
             ->where('user_id', $request->user()->id)
-            ->with('items.product')
+            ->with(['items.product', 'delivery'])
             ->latest()
             ->paginate(min($request->integer('per_page', 15), 50));
 
@@ -33,7 +33,7 @@ class OrderController extends Controller
             ], 403);
         }
 
-        $order->load('items.product');
+        $order->load(['items.product', 'delivery']);
 
         return response()->json([
             'success' => true,

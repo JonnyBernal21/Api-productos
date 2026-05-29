@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
@@ -49,6 +50,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function delivery(): HasOne
+    {
+        return $this->hasOne(OrderDelivery::class);
+    }
+
     public function isPendingPayment(): bool
     {
         return $this->status === OrderStatus::PendingPayment;
@@ -57,5 +63,16 @@ class Order extends Model
     public function isConfirmed(): bool
     {
         return $this->status === OrderStatus::Confirmed;
+    }
+
+    public function needsDeliveryConfirmation(): bool
+    {
+        return $this->isConfirmed() && ! $this->delivery;
+    }
+
+    public function hasActiveDelivery(): bool
+    {
+        return $this->delivery !== null
+            && $this->delivery->status !== \App\Enums\DeliveryStatus::Delivered;
     }
 }

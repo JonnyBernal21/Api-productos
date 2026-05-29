@@ -47,9 +47,14 @@ class CheckoutController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Pago confirmado. Orden completada.',
+            'message' => 'Pago confirmado. Confirma tu punto de entrega.',
             'data' => [
                 'order' => new OrderResource($order),
+                'next_step' => [
+                    'action' => 'confirm_delivery_point',
+                    'endpoint' => url("/api/orders/{$order->id}/delivery"),
+                    'tracking_endpoint' => url("/api/orders/{$order->id}/delivery/tracking"),
+                ],
             ],
         ]);
     }

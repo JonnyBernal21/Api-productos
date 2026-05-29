@@ -28,7 +28,33 @@ class OrderResource extends JsonResource
             'confirmed_at' => $this->confirmed_at?->toIso8601String(),
             'cancelled_at' => $this->cancelled_at?->toIso8601String(),
             'created_at' => $this->created_at?->toIso8601String(),
+            'next_action' => $this->resolveNextAction(),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
+            'delivery' => $this->whenLoaded(
+                'delivery',
+                fn () => $this->delivery ? new DeliveryResource($this->delivery) : null
+            ),
         ];
+    }
+
+    protected function resolveNextAction(): ?string
+    {
+        if ($this->needsDeliveryConfirmation()) {
+            return 'confirm_delivery_point';
+        }
+
+        if ($this->hasActiveDelivery()) {
+            return 'track_delivery';
+        }
+
+        if ($this->delivery?->status === \App\Enums\DeliveryStatus::Delivered) {
+            return 'completed';
+        }
+
+        if ($this->isPendingPayment()) {
+            return 'confirm_payment';
+        }
+
+        return null;
     }
 }
